@@ -1,0 +1,155 @@
+/**
+ * GeoEstate main CSS file
+ */
+
+ body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 1rem;
+    overflow-y: auto;
+    transition: margin-left 0.3s;
+}
+
+.map-container {
+    flex-grow: 1;
+    height: 100%;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+}
+
+.property-search {
+    display: none;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+}
+
+.search-toggle {
+    cursor: pointer;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.price-marker {
+    background-color: #3388ff;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.property-popup {
+    max-width: 400px;
+    width: 300px;
+    padding: 10x;
+    
+}
+
+.property-popup img {
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.price-estimator-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.map-search {
+    position: absolute;
+    top: 10px;
+    left: 310px;
+    z-index: 1000;
+    width: 300px;
+}
+
+.property-results {
+    margin-top: 1rem;
+}
+
+.property-card {
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.hidden {
+    margin-left: -300px;
+}
+
+#toggleSidebar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    display: none;
+}
+
+.user-location-marker {
+    color: #0d6efd;
+    text-align: center;
+}
+
+/* Estimation result styling */
+#estimation-result {
+    transition: all 0.3s ease;
+}
+
+#estimated-price-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #198754;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        z-index: 1000;
+        height: 100%;
+        background-color: white;
+    }
+    
+    #toggleSidebar {
+        display: block;
+    }
+    
+    .map-search {
+        left: 60px;
+        width: calc(100% - 120px);
+    }
+}

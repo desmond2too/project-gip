@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoEstate</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <button id="toggleSidebar" class="btn btn-light">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <h4>GeoEstate</h4>
+        <nav class="nav flex-column">
+            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="#">Featured Listings</a>
+            <a class="nav-link" href="#">Register</a>
+            <a class="nav-link" href="#">Login</a>
+        </nav>
+        
+        <hr>
+        
+        <div class="search-toggle" id="searchToggle">
+            <i class="fas fa-search"></i> Find Properties
+        </div>
+        
+        <div class="property-search" id="propertySearch">
+            <form id="property-search-form">
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="City, neighborhood...">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Property Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="residential" id="residential" checked>
+                        <label class="form-check-label" for="residential">Residential</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="commercial" id="commercial">
+                        <label class="form-check-label" for="commercial">Commercial</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="industrial" id="industrial">
+                        <label class="form-check-label" for="industrial">Industrial</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Deal Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="sale" id="for-sale" checked>
+                        <label class="form-check-label" for="for-sale">For Sale</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="rent" id="for-rent">
+                        <label class="form-check-label" for="for-rent">For Rent</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="min-price" class="form-label">Min Price ($)</label>
+                    <input type="number" class="form-control" id="min-price" min="0" value="0">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="max-price" class="form-label">Max Price ($)</label>
+                    <input type="number" class="form-control" id="max-price" min="0" value="1000000">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Features</label>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text"><i class="fas fa-bed"></i></span>
+                        <select class="form-select" id="bedrooms">
+                            <option value="">Bedrooms (Any)</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text"><i class="fas fa-bath"></i></span>
+                        <select class="form-select" id="bathrooms">
+                            <option value="">Bathrooms (Any)</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Proximity To</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="schools" id="schools">
+                        <label class="form-check-label" for="schools">Schools</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="hospitals" id="hospitals">
+                        <label class="form-check-label" for="hospitals">Hospitals</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="transport" id="transport">
+                        <label class="form-check-label" for="transport">Public Transport</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="shopping" id="shopping">
+                        <label class="form-check-label" for="shopping">Shopping Centers</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </form>
+        </div>
+        
+        <div class="property-results" id="propertyResults">
+            <h5>Listings in this Area <span class="badge bg-primary" id="resultCount">0</span></h5>
+            <div class="property-list" id="propertyList">
+                <!-- Property results will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="map-container">
+        <div class="map-search">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search location..." id="locationSearch">
+                <button class="btn btn-primary" type="button" id="locationSearchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+        
+        <div class="map-controls">
+            <div class="btn-group">
+                <button class="btn btn-light" id="currentLocation" title="Current Location">
+                    <i class="fas fa-location-crosshairs"></i>
+                </button>
+            </div>
+        </div>
+        
+        <button class="btn btn-success price-estimator-btn" id="priceEstimatorBtn">
+            <i class="fas fa-calculator"></i> Estimate Price
+        </button>
+    </div>
+
+    <!-- Modal for Price Estimation -->
+    <div class="modal fade" id="priceEstimationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Property Price Estimation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="price-estimator-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="est-property-type" class="form-label">Property Type</label>
+                                <select class="form-select" id="est-property-type" required>
+                                    <option value="">Select...</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="house">House</option>
+                                    <option value="townhouse">Townhouse</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="commercial">Commercial Building</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="est-location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="est-location" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="est-bedrooms" class="form-label">Bedrooms</label>
+                                <input type="number" class="form-control" id="est-bedrooms" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="est-bathrooms" class="form-label">Bathrooms</label>
+                                <input type="number" class="form-control" id="est-bathrooms" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="est-area" class="form-label">Area (sqm)</label>
+                                <input type="number" class="form-control" id="est-area" min="0" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="est-age" class="form-label">Property Age (years)</label>
+                                <input type="number" class="form-control" id="est-age" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="est-condition" class="form-label">Condition</label>
+                                <select class="form-select" id="est-condition" required>
+                                    <option value="">Select...</option>
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good">Good</option>
+                                    <option value="fair">Fair</option>
+                                    <option value="poor">Poor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Features</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-garage">
+                                        <label class="form-check-label" for="est-garage">Garage</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-pool">
+                                        <label class="form-check-label" for="est-pool">Swimming Pool</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-garden">
+                                        <label class="form-check-label" for="est-garden">Garden</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-security">
+                                        <label class="form-check-label" for="est-security">Security System</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-aircon">
+                                        <label class="form-check-label" for="est-aircon">Air Conditioning</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="est-furnished">
+                                        <label class="form-check-label" for="est-furnished">Furnished</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="estimation-result" class="alert alert-success mt-3" style="display: none;">
+                        <h4 class="alert-heading">Estimated Price</h4>
+                        <h3 id="estimated-price-value">$0</h3>
+                        <p class="mb-0">This estimate is based on comparable properties and market trends in your area.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="calculateEstimateBtn">Calculate Estimate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
